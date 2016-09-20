@@ -6,7 +6,29 @@ const Ambassador = require('./Ambassador')
 const Listing = React.createClass({
 
   getInitialState(){
-    return {searchQuery: '', ambassadors:[]}
+    return {searchQuery: '', currentTeacher:'', ambassadors:[]}
+  },
+
+  setCurrentTeacher(){
+    return new Promise(function(resolve,reject){
+      const url = 'http://localhost:5000/teachers'
+      const request = new XMLHttpRequest()
+
+      request.open("GET", url)
+      request.setRequestHeader('Content-Type', 'application/json')
+      request.withCredentials = true
+
+      request.onload = function() {
+          if (request.status === 200) {
+              const jsonString = request.responseText
+              const data = JSON.parse(jsonString)
+              this.setState({currentTeacher: data})
+              resolve(request.response);
+          }else{reject(Error(request.statusText))}
+      }.bind(this)
+      request.send(null)
+    }.bind(this))
+ 
   },
 
   componentDidMount(){
@@ -33,29 +55,38 @@ const Listing = React.createClass({
     this.setState({searchQuery: event.target.value})
   },
 
-  addToFavourites(event){
-    console.log(this.props.currentTeacher)
-    //AJAX request to add ambassador to teacher
+  addTeacherAmbassador(teacherID,ambassadorID){
+    const url = 'http://localhost:5000/api/teacherambassadors'
+    const request = new XMLHttpRequest()
+    request.open("POST", url )
+    request.setRequestHeader("Content-Type", "application/json")
+    request.withCredentials = true
+    request.onload = () => {
+      if(request.status === 201){
+        console.log(request.responseText)
+      } else if (request.status === 401){
+      }
+    }
+    const data={
+      teacher_ambassadors:{
+        teacher_id: teacherID,
+        ambassador_id: ambassadorID
+      }
+     
+    }
+    request.send(JSON.stringify(data))
+  },
 
-    // const url = 'http://localhost:5000/api/teacherambassadors'
-    // const request = new XMLHttpRequest()
-    // request.open("POST", url )
-    // request.setRequestHeader("Content-Type", "application/json")
-    // request.withCredentials = true
-    // request.onload = () => {
-    //   if(request.status === 200){
-    //     console.log(request.responseText)
+  addToFavourites(ambassadorID){
 
-    //   } else if (request.status === 401){
-    //   }
-    // }
-    // const data={
-    //   teacher_id: this.state.currentTeacher
-    // }
-    // request.send(null)
+    this.setCurrentTeacher().then(()=> {       
+        this.addTeacherAmbassador(this.state.currentTeacher.id,ambassadorID)    
+      }
+    )
   },
 
   render(){
+    
     return(
         <div className="listing">
           <nav>
@@ -65,9 +96,10 @@ const Listing = React.createClass({
           </nav>
           <div className='ambassadors-container'>
             {
-              this.state.ambassadors.filter((ambassador) => ` ${ambassador.subject}`.toUpperCase().indexOf(this.state.searchQuery.toUpperCase()) >= 0).map((ambassador)=>(
-                <Ambassador {...ambassador} key={ambassador.ambassador_id} addToFavourites={this.addToFavourites}/>
-                ))
+              this.state.ambassadors.filter((ambassador) => ` ${ambassador.subject}`.toUpperCase().indexOf(this.state.searchQuery.toUpperCase()) >= 0).map((ambassador)=>{
+                return(
+                <Ambassador {...ambassador} value= {ambassador.id} key={ambassador.id} addToFavourites={this.addToFavourites}/>)
+                })
             }
           </div>
         </div>

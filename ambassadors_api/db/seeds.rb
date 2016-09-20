@@ -27,7 +27,10 @@ teacher2 = Teacher.create(
     school: 'test2',
     city: 'Edinburgh',
     email: 'jsmith@gmail.com', 
-    phone_nb: '123456789'}
+    phone_nb: '123456789',
+    password: 'topsecret', 
+    password_confirmation: 'topsecret'
+   }
 )
 teacher3 = Teacher.create(
   { name: 'Jack',
@@ -114,6 +117,9 @@ TeacherAmbassador.create(
   { teacher_id: teacher1.id, 
     ambassador_id: ambassador1.id}
 )
-
+TeacherAmbassador.create(
+  { teacher_id: teacher1.id, 
+    ambassador_id: ambassador2.id}
+)
 
 

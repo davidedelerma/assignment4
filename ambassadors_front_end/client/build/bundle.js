@@ -56,7 +56,7 @@
 	
 	var Home = __webpack_require__(222);
 	var Listing = __webpack_require__(231);
-	var Main = __webpack_require__(233);
+	var Main = __webpack_require__(232);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -25441,13 +25441,15 @@
 	
 	var Home = React.createClass({
 	  displayName: 'Home',
-	  getInitialState: function getInitialState() {
-	    return { currentTeacher: null };
-	  },
-	  setCurrentTeacher: function setCurrentTeacher(teacher) {
-	    this.setState({ currentTeacher: teacher });
-	  },
+	
+	  // getInitialState(){
+	  //   return {currentTeacher: null}
+	  // },
+	  // setCurrentTeacher(teacher){
+	  //   this.setState({currentTeacher: teacher})
+	  // },
 	  render: function render() {
+	    console.log(this.props.setCurrentTeacher);
 	    return React.createElement(
 	      'div',
 	      { className: 'home' },
@@ -25456,10 +25458,10 @@
 	        { className: 'title' },
 	        ' Ambassadors '
 	      ),
-	      React.createElement(LoginBox, { url: 'http://localhost:5000/', setCurrentTeacher: this.setCurrentTeacher }),
+	      React.createElement(LoginBox, { url: 'http://localhost:5000/' }),
 	      React.createElement(
 	        Link,
-	        { className: 'ambassador-link', to: '/ambassadors', currentTeacher: this.state.currentTeacher },
+	        { className: 'ambassador-link', to: '/ambassadors' },
 	        'View Ambassadors'
 	      )
 	    );
@@ -25485,6 +25487,7 @@
 	    return { currentTeacher: null };
 	  },
 	  setTeacher: function setTeacher(teacher) {
+	
 	    this.setState({ currentTeacher: teacher, favList: [] });
 	    this.props.setCurrentTeacher(teacher);
 	  },
@@ -25935,12 +25938,34 @@
 	var Link = Router.Link;
 	var browserHistory = Router.browserHistory;
 	
-	var Ambassador = __webpack_require__(232);
+	var Ambassador = __webpack_require__(233);
 	
 	var Listing = React.createClass({
 	  displayName: 'Listing',
 	  getInitialState: function getInitialState() {
-	    return { searchQuery: '', ambassadors: [] };
+	    return { searchQuery: '', currentTeacher: '', ambassadors: [] };
+	  },
+	  setCurrentTeacher: function setCurrentTeacher() {
+	    return new Promise(function (resolve, reject) {
+	      var url = 'http://localhost:5000/teachers';
+	      var request = new XMLHttpRequest();
+	
+	      request.open("GET", url);
+	      request.setRequestHeader('Content-Type', 'application/json');
+	      request.withCredentials = true;
+	
+	      request.onload = function () {
+	        if (request.status === 200) {
+	          var jsonString = request.responseText;
+	          var data = JSON.parse(jsonString);
+	          this.setState({ currentTeacher: data });
+	          resolve(request.response);
+	        } else {
+	          reject(Error(request.statusText));
+	        }
+	      }.bind(this);
+	      request.send(null);
+	    }.bind(this));
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var url = 'http://localhost:5000/api/ambassadors';
@@ -25964,29 +25989,35 @@
 	  doSearch: function doSearch(event) {
 	    this.setState({ searchQuery: event.target.value });
 	  },
-	  addToFavourites: function addToFavourites(event) {
-	    console.log(this.props.currentTeacher);
-	    //AJAX request to add ambassador to teacher
+	  addTeacherAmbassador: function addTeacherAmbassador(teacherID, ambassadorID) {
+	    var url = 'http://localhost:5000/api/teacherambassadors';
+	    var request = new XMLHttpRequest();
+	    request.open("POST", url);
+	    request.setRequestHeader("Content-Type", "application/json");
+	    request.withCredentials = true;
+	    request.onload = function () {
+	      if (request.status === 201) {
+	        console.log(request.responseText);
+	      } else if (request.status === 401) {}
+	    };
+	    var data = {
+	      teacher_ambassadors: {
+	        teacher_id: teacherID,
+	        ambassador_id: ambassadorID
+	      }
 	
-	    // const url = 'http://localhost:5000/api/teacherambassadors'
-	    // const request = new XMLHttpRequest()
-	    // request.open("POST", url )
-	    // request.setRequestHeader("Content-Type", "application/json")
-	    // request.withCredentials = true
-	    // request.onload = () => {
-	    //   if(request.status === 200){
-	    //     console.log(request.responseText)
+	    };
+	    request.send(JSON.stringify(data));
+	  },
+	  addToFavourites: function addToFavourites(ambassadorID) {
+	    var _this = this;
 	
-	    //   } else if (request.status === 401){
-	    //   }
-	    // }
-	    // const data={
-	    //   teacher_id: this.state.currentTeacher
-	    // }
-	    // request.send(null)
+	    this.setCurrentTeacher().then(function () {
+	      _this.addTeacherAmbassador(_this.state.currentTeacher.id, ambassadorID);
+	    });
 	  },
 	  render: function render() {
-	    var _this = this;
+	    var _this2 = this;
 	
 	    return React.createElement(
 	      'div',
@@ -26006,9 +26037,9 @@
 	        'div',
 	        { className: 'ambassadors-container' },
 	        this.state.ambassadors.filter(function (ambassador) {
-	          return (' ' + ambassador.subject).toUpperCase().indexOf(_this.state.searchQuery.toUpperCase()) >= 0;
+	          return (' ' + ambassador.subject).toUpperCase().indexOf(_this2.state.searchQuery.toUpperCase()) >= 0;
 	        }).map(function (ambassador) {
-	          return React.createElement(Ambassador, _extends({}, ambassador, { key: ambassador.ambassador_id, addToFavourites: _this.addToFavourites }));
+	          return React.createElement(Ambassador, _extends({}, ambassador, { value: ambassador.id, key: ambassador.id, addToFavourites: _this2.addToFavourites }));
 	        })
 	      )
 	    );
@@ -26018,66 +26049,6 @@
 
 /***/ },
 /* 232 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	
-	var Ambassador = function Ambassador(props) {
-	  return React.createElement(
-	    'div',
-	    { className: 'show' },
-	    React.createElement(
-	      'div',
-	      { className: 'ambassador-details' },
-	      React.createElement(
-	        'h3',
-	        { className: 'ambassador-name' },
-	        props.name
-	      ),
-	      React.createElement(
-	        'h4',
-	        { className: 'ambassador-specialization' },
-	        'Specialization: ',
-	        props.subject
-	      ),
-	      React.createElement(
-	        'p',
-	        { className: 'ambassador-email' },
-	        'Email: ',
-	        props.email
-	      ),
-	      React.createElement(
-	        'p',
-	        { className: 'ambassador-city' },
-	        'City: ',
-	        props.city
-	      ),
-	      React.createElement(
-	        'button',
-	        { onClick: props.addToFavourites },
-	        'Add +'
-	      )
-	    )
-	  );
-	};
-	
-	var _React$PropTypes = React.PropTypes;
-	var string = _React$PropTypes.string;
-	var number = _React$PropTypes.number;
-	
-	
-	Ambassador.propTypes = {
-	  name: string.isRequired,
-	  email: string.isRequired,
-	  city: string.isRequired
-	};
-	
-	module.exports = Ambassador;
-
-/***/ },
-/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26100,6 +26071,73 @@
 	};
 	
 	module.exports = Main;
+
+/***/ },
+/* 233 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	
+	var Ambassador = React.createClass({
+	  displayName: 'Ambassador',
+	  onClick: function onClick() {
+	    console.log(this.props.id);
+	    this.props.addToFavourites(this.props.id);
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'show' },
+	      React.createElement(
+	        'div',
+	        { className: 'ambassador-details' },
+	        React.createElement(
+	          'h3',
+	          { className: 'ambassador-name' },
+	          this.props.name
+	        ),
+	        React.createElement(
+	          'h4',
+	          { className: 'ambassador-specialization' },
+	          'Specialization: ',
+	          this.props.subject
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'ambassador-email' },
+	          'Email: ',
+	          this.props.email
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'ambassador-city' },
+	          'City: ',
+	          this.props.city
+	        ),
+	        React.createElement(
+	          'button',
+	          { onClick: this.onClick },
+	          'Add +'
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	var _React$PropTypes = React.PropTypes;
+	var string = _React$PropTypes.string;
+	var number = _React$PropTypes.number;
+	
+	
+	Ambassador.propTypes = {
+	  name: string.isRequired,
+	  email: string.isRequired,
+	  city: string.isRequired
+	};
+	
+	module.exports = Ambassador;
 
 /***/ }
 /******/ ]);
