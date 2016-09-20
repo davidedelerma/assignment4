@@ -43,6 +43,7 @@ const Listing = React.createClass({
             const jsonString = request.responseText
             const data = JSON.parse(jsonString)
             this.setState({ambassadors: data})
+            this.setCurrentTeacher()
         } else {
           console.log('not logged in')
           browserHistory.goBack()
@@ -64,6 +65,7 @@ const Listing = React.createClass({
     request.onload = () => {
       if(request.status === 201){
         console.log(request.responseText)
+        //<Route path='/ambassadorteachers/create' component={Confirmation} />
       } else if (request.status === 401){
       }
     }
@@ -78,11 +80,11 @@ const Listing = React.createClass({
   },
 
   addToFavourites(ambassadorID){
-
-    this.setCurrentTeacher().then(()=> {       
-        this.addTeacherAmbassador(this.state.currentTeacher.id,ambassadorID)    
-      }
-    )
+    // this.setCurrentTeacher().then(()=> {       
+    //     this.addTeacherAmbassador(this.state.currentTeacher.id,ambassadorID)    
+    //   }
+    // )
+    this.addTeacherAmbassador(this.state.currentTeacher.id, ambassadorID) 
   },
 
   render(){

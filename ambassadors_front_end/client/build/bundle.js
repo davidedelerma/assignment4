@@ -57,6 +57,7 @@
 	var Home = __webpack_require__(222);
 	var Listing = __webpack_require__(231);
 	var Main = __webpack_require__(232);
+	var Create = __webpack_require__(234);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -68,7 +69,8 @@
 	        Route,
 	        { path: '/', component: Main },
 	        React.createElement(IndexRoute, { component: Home }),
-	        React.createElement(Route, { path: '/ambassadors', component: Listing })
+	        React.createElement(Route, { path: '/ambassadors', component: Listing }),
+	        React.createElement(Route, { path: '/ambassadorteachers/create', component: Create })
 	      )
 	    );
 	  }
@@ -25487,9 +25489,7 @@
 	    return { currentTeacher: null };
 	  },
 	  setTeacher: function setTeacher(teacher) {
-	
 	    this.setState({ currentTeacher: teacher, favList: [] });
-	    this.props.setCurrentTeacher(teacher);
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
@@ -25979,6 +25979,7 @@
 	        var jsonString = request.responseText;
 	        var data = JSON.parse(jsonString);
 	        this.setState({ ambassadors: data });
+	        this.setCurrentTeacher();
 	      } else {
 	        console.log('not logged in');
 	        browserHistory.goBack();
@@ -25998,6 +25999,7 @@
 	    request.onload = function () {
 	      if (request.status === 201) {
 	        console.log(request.responseText);
+	        //<Route path='/ambassadorteachers/create' component={Confirmation} />
 	      } else if (request.status === 401) {}
 	    };
 	    var data = {
@@ -26010,14 +26012,14 @@
 	    request.send(JSON.stringify(data));
 	  },
 	  addToFavourites: function addToFavourites(ambassadorID) {
-	    var _this = this;
-	
-	    this.setCurrentTeacher().then(function () {
-	      _this.addTeacherAmbassador(_this.state.currentTeacher.id, ambassadorID);
-	    });
+	    // this.setCurrentTeacher().then(()=> {       
+	    //     this.addTeacherAmbassador(this.state.currentTeacher.id,ambassadorID)    
+	    //   }
+	    // )
+	    this.addTeacherAmbassador(this.state.currentTeacher.id, ambassadorID);
 	  },
 	  render: function render() {
-	    var _this2 = this;
+	    var _this = this;
 	
 	    return React.createElement(
 	      'div',
@@ -26037,9 +26039,9 @@
 	        'div',
 	        { className: 'ambassadors-container' },
 	        this.state.ambassadors.filter(function (ambassador) {
-	          return (' ' + ambassador.subject).toUpperCase().indexOf(_this2.state.searchQuery.toUpperCase()) >= 0;
+	          return (' ' + ambassador.subject).toUpperCase().indexOf(_this.state.searchQuery.toUpperCase()) >= 0;
 	        }).map(function (ambassador) {
-	          return React.createElement(Ambassador, _extends({}, ambassador, { value: ambassador.id, key: ambassador.id, addToFavourites: _this2.addToFavourites }));
+	          return React.createElement(Ambassador, _extends({}, ambassador, { value: ambassador.id, key: ambassador.id, addToFavourites: _this.addToFavourites }));
 	        })
 	      )
 	    );
@@ -26079,6 +26081,9 @@
 	'use strict';
 	
 	var React = __webpack_require__(1);
+	var Router = __webpack_require__(159);
+	var Create = __webpack_require__(234);
+	var Link = Router.Link;
 	
 	var Ambassador = React.createClass({
 	  displayName: 'Ambassador',
@@ -26117,8 +26122,8 @@
 	          this.props.city
 	        ),
 	        React.createElement(
-	          'button',
-	          { onClick: this.onClick },
+	          Link,
+	          { onClick: this.onClick, to: '/ambassadorteachers/create' },
 	          'Add +'
 	        )
 	      )
@@ -26138,6 +26143,27 @@
 	};
 	
 	module.exports = Ambassador;
+
+/***/ },
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	
+	var Create = React.createClass({
+	  displayName: 'Create',
+	  render: function render() {
+	    return React.createElement(
+	      'h1',
+	      null,
+	      ' The ambassador is added to list '
+	    );
+	  }
+	});
+	
+	module.exports = Create;
 
 /***/ }
 /******/ ]);

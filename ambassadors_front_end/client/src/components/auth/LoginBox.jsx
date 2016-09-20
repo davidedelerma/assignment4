@@ -9,9 +9,7 @@ const LoginBox = React.createClass({
     return {currentTeacher: null}
   },
   setTeacher(teacher){
-
     this.setState({currentTeacher: teacher, favList:[]})
-    this.props.setCurrentTeacher(teacher)
   },
 
   componentDidMount(){

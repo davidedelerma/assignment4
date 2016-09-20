@@ -1,5 +1,7 @@
 const React = require('react')
-
+const Router = require('react-router')
+const Create = require('./Create')
+const { Link } = Router
 const Ambassador = React.createClass({
 
     onClick(){
@@ -14,7 +16,7 @@ const Ambassador = React.createClass({
           <h4 className='ambassador-specialization'>Specialization: {this.props.subject}</h4>
           <p className='ambassador-email'>Email: {this.props.email}</p>
           <p className='ambassador-city'>City: {this.props.city}</p>
-          <button onClick={this.onClick}>Add +</button>
+          <Link onClick={this.onClick} to='/ambassadorteachers/create'>Add +</Link>
         </div>
       </div>
       )

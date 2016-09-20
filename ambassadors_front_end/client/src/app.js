@@ -5,6 +5,8 @@ const {Router, Route, IndexRoute, hashHistory} = ReactRouter
 const Home = require('./components/Home')
 const Listing = require('./components/Listing')
 const Main = require('./components/Main')
+const Create = require('./components/Create')
+
 
 const App = React.createClass({
   render(){
@@ -13,6 +15,7 @@ const App = React.createClass({
         <Route path='/' component={Main}>
           <IndexRoute component={Home} />
           <Route path='/ambassadors' component={Listing} />
+          <Route path='/ambassadorteachers/create' component={Create} />
         </Route> 
       </Router>
     )
