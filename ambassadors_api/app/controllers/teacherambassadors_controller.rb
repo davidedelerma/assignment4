@@ -11,10 +11,19 @@ class TeacherambassadorsController < ApplicationController
   end
 
   def create
-    teacherAmbassador = TeacherAmbassador.create( teacherAmbassador_params )
-    render json: teacherAmbassador, status: :created
+    if TeacherAmbassador.exists?(teacher_id: params[:teacher_ambassadors][:teacher_id], ambassador_id: params[:teacher_ambassadors][:ambassador_id]) == false
+      teacherAmbassador = TeacherAmbassador.create( teacherAmbassador_params )
+      # render json: teacherAmbassador, status: :created
+      render :nothing => true
+    end
   end
 
+  def destroy
+    # join = TeacherAmbassador.find(params[:id])
+    # join.destroy
+    TeacherAmbassador.destroy(params[:id])
+    render :nothing => true
+  end
 
   private
   def teacherAmbassador_params

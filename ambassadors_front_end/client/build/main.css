@@ -1,3 +1,9 @@
+html { 
+  background-color: #1A1A1A;
+
+  background-size: cover;
+}
+
 body{
   font-family: Verdana;
   margin: 0;
@@ -10,17 +16,27 @@ body{
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-image: url(images/notflix-background.jpg);
+  background-image: url(images/assignment4_background.jpg);
   background-size: cover;
 
 }
 
+.title-nav{
+  text-transform: uppercase;
+  font-family: Orbitron, sans-serif;
+  color: #00BFFF;
+  font-size: 30px;
+  float: left;
+  text-decoration: none;
+}
+
 .title{
   text-transform: uppercase;
-  font-family: Impact, Charcoal, sans-serif;
-  color: crimson;
-  font-size: 60px;
-  -webkit-text-stroke: 2px black;
+  font-family: Orbitron, sans-serif;
+  color: #00BFFF;
+  font-size: 50px;
+  font-weight: 900;
+  float: left;
   text-decoration: none;
 }
 
@@ -47,11 +63,26 @@ body{
 }
 
 nav{
-  display: flex;
+  /*display: flex;*/
   align-items: center;
-  background: #eee;
   padding: 10px;
   margin: 0 0 20px 0;
+}
+
+.cart{
+  text-decoration: none;
+  font-family: Orbitron, sans-serif;
+  font-size: 15px;
+  color: #fff;
+  text-overflow: wrap;
+  transition: .3s background-color;
+  background-color: rgba(0, 191, 255, 0.5);
+  padding:5px 10px 5px 5px;
+  margin:0px;
+  float: right;
+  min-width: 12%;
+  width: 110px;
+  text-align: center;
 }
 
 .search-box{
@@ -74,7 +105,7 @@ nav{
 }
 
 button{
-  padding: 10px 50px;
+  padding: 5px 5px;
   margin 20px 0;
   color: white;
   background-color: #333;
@@ -86,35 +117,41 @@ button{
   width: 90%;
 }
 
-.shows-container{
+.ambassadors-container{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.shows-container > *{
+.ambassadors-container > *{
   min-width: 100px;
   min-height: 100px;
 }
 
-.show{
+.ambassador{
   background: rgba(0, 0, 0, .8);
   color: #eee;
-  margin: 10px;
-  padding: 10px;
-  width: 350px;
+  margin: 5px;
+  padding: 5px;
+  width: 200px;
 }
 
-.show-title{
+.ambassador-name{
   margin: 0;
 }
 
-.show-series{
+.ambassador-specialization'{
   font-size: 10px;
   margin: 0;
 }
 
-.show-description{
+.ambassador-email{
+  font-size: 12px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.ambassador-city{
   font-size: 12px;
   padding: 0 20px;
   text-align: center;

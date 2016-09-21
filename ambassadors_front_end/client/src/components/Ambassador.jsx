@@ -1,22 +1,48 @@
 const React = require('react')
-const Router = require('react-router')
-const Create = require('./Create')
-const { Link } = Router
+// const Router = require('react-router')
+// const { Link } = Router
 const Ambassador = React.createClass({
-
-    onClick(){
-      console.log(this.props.id)
-      this.props.addToFavourites(this.props.id)
+    getInitialState(){
+      return {buttonString: 'Add +'}
     },
+    onClick(){
+      this.setState({buttonString: 'Added'})
+      console.log(this.props.id)
+      var canAdd = this.props.addToFavourites(this.props.id)
+ 
+    },
+    componentDidMount(){
+      const url = 'http://localhost:5000/api/teacherambassadors'
+      const request = new XMLHttpRequest()
+      request.open("GET", url)
+      request.setRequestHeader('Content-Type', 'application/json')
+      request.withCredentials = true
+      request.onload = function() {
+          if (request.status === 200) {
+              const jsonString = request.responseText
+              const data = JSON.parse(jsonString)
+              data.teacher_ambassadors.forEach(function(ambassador){
+                if (ambassador.ambassador_id === this.props.id){
+                  this.setState({buttonString: 'Added'})
+                } 
+              }.bind(this))
+        
+
+          } 
+      }.bind(this)
+      request.send(null)
+    },
+
+
     render(){
       return(
-      <div className = 'show'>
+      <div className = 'ambassador'>
         <div className = 'ambassador-details'>
           <h3 className='ambassador-name'>{this.props.name}</h3>
           <h4 className='ambassador-specialization'>Specialization: {this.props.subject}</h4>
           <p className='ambassador-email'>Email: {this.props.email}</p>
           <p className='ambassador-city'>City: {this.props.city}</p>
-          <Link onClick={this.onClick} to='/ambassadorteachers/create'>Add +</Link>
+          <button onClick={this.onClick}>{this.state.buttonString}</button>
         </div>
       </div>
       )

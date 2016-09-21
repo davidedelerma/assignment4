@@ -57,7 +57,7 @@
 	var Home = __webpack_require__(222);
 	var Listing = __webpack_require__(231);
 	var Main = __webpack_require__(232);
-	var Create = __webpack_require__(234);
+	var Cart = __webpack_require__(235);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -70,7 +70,7 @@
 	        { path: '/', component: Main },
 	        React.createElement(IndexRoute, { component: Home }),
 	        React.createElement(Route, { path: '/ambassadors', component: Listing }),
-	        React.createElement(Route, { path: '/ambassadorteachers/create', component: Create })
+	        React.createElement(Route, { path: '/cart', component: Cart })
 	      )
 	    );
 	  }
@@ -25939,6 +25939,7 @@
 	var browserHistory = Router.browserHistory;
 	
 	var Ambassador = __webpack_require__(233);
+	var Cart = __webpack_require__(235);
 	
 	var Listing = React.createClass({
 	  displayName: 'Listing',
@@ -25999,8 +26000,7 @@
 	    request.onload = function () {
 	      if (request.status === 201) {
 	        console.log(request.responseText);
-	        //<Route path='/ambassadorteachers/create' component={Confirmation} />
-	      } else if (request.status === 401) {}
+	      }
 	    };
 	    var data = {
 	      teacher_ambassadors: {
@@ -26016,7 +26016,7 @@
 	    //     this.addTeacherAmbassador(this.state.currentTeacher.id,ambassadorID)    
 	    //   }
 	    // )
-	    this.addTeacherAmbassador(this.state.currentTeacher.id, ambassadorID);
+	    return this.addTeacherAmbassador(this.state.currentTeacher.id, ambassadorID);
 	  },
 	  render: function render() {
 	    var _this = this;
@@ -26029,11 +26029,16 @@
 	        null,
 	        React.createElement(
 	          Link,
-	          { className: 'title', to: '/' },
+	          { className: 'title-nav', to: '/' },
 	          ' Ambassadors '
 	        ),
 	        React.createElement('input', { className: 'search-box', type: 'text', placeholder: 'search by subject',
-	          value: this.state.searchQuery, onChange: this.doSearch })
+	          value: this.state.searchQuery, onChange: this.doSearch }),
+	        React.createElement(
+	          Link,
+	          { className: 'cart', to: '/cart' },
+	          ' My Ambassadors '
+	        )
 	      ),
 	      React.createElement(
 	        'div',
@@ -26081,20 +26086,41 @@
 	'use strict';
 	
 	var React = __webpack_require__(1);
-	var Router = __webpack_require__(159);
-	var Create = __webpack_require__(234);
-	var Link = Router.Link;
-	
+	// const Router = require('react-router')
+	// const { Link } = Router
 	var Ambassador = React.createClass({
 	  displayName: 'Ambassador',
+	  getInitialState: function getInitialState() {
+	    return { buttonString: 'Add +' };
+	  },
 	  onClick: function onClick() {
+	    this.setState({ buttonString: 'Added' });
 	    console.log(this.props.id);
-	    this.props.addToFavourites(this.props.id);
+	    var canAdd = this.props.addToFavourites(this.props.id);
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var url = 'http://localhost:5000/api/teacherambassadors';
+	    var request = new XMLHttpRequest();
+	    request.open("GET", url);
+	    request.setRequestHeader('Content-Type', 'application/json');
+	    request.withCredentials = true;
+	    request.onload = function () {
+	      if (request.status === 200) {
+	        var jsonString = request.responseText;
+	        var data = JSON.parse(jsonString);
+	        data.teacher_ambassadors.forEach(function (ambassador) {
+	          if (ambassador.ambassador_id === this.props.id) {
+	            this.setState({ buttonString: 'Added' });
+	          }
+	        }.bind(this));
+	      }
+	    }.bind(this);
+	    request.send(null);
 	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'show' },
+	      { className: 'ambassador' },
 	      React.createElement(
 	        'div',
 	        { className: 'ambassador-details' },
@@ -26122,9 +26148,9 @@
 	          this.props.city
 	        ),
 	        React.createElement(
-	          Link,
-	          { onClick: this.onClick, to: '/ambassadorteachers/create' },
-	          'Add +'
+	          'button',
+	          { onClick: this.onClick },
+	          this.state.buttonString
 	        )
 	      )
 	    );
@@ -26145,25 +26171,124 @@
 	module.exports = Ambassador;
 
 /***/ },
-/* 234 */
+/* 234 */,
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var React = __webpack_require__(1);
+	var FavAmbassador = __webpack_require__(236);
+	
+	var Cart = React.createClass({
+	  displayName: 'Cart',
+	  getInitialState: function getInitialState() {
+	    return { favAmbassadors: [] };
+	  },
+	  removeAmbassador: function removeAmbassador(ambassadorID) {
+	    var newAmbassadors = this.state.favAmbassadors.filter(function (obj) {
+	      return obj.ambassador.id !== ambassadorID;
+	    });
+	    this.setState({ favAmbassadors: newAmbassadors });
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var url = 'http://localhost:5000/api/teacherambassadors';
+	    var request = new XMLHttpRequest();
+	    request.open("GET", url);
+	    request.setRequestHeader('Content-Type', 'application/json');
+	    request.withCredentials = true;
+	    request.onload = function () {
+	      if (request.status === 200) {
+	        var jsonString = request.responseText;
+	        var data = JSON.parse(jsonString);
+	        this.setState({ favAmbassadors: data.teacher_ambassadors });
+	        console.log(this.state);
+	      }
+	    }.bind(this);
+	    request.send(null);
+	  },
+	  render: function render() {
+	    var _this = this;
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'ambassadors-container' },
+	      this.state.favAmbassadors.map(function (join) {
+	        return React.createElement(FavAmbassador, _extends({}, join, { value: join.id, key: join.id, removeAmbassador: _this.removeAmbassador }));
+	      })
+	    );
+	  }
+	});
+	
+	module.exports = Cart;
+
+/***/ },
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(1);
 	
-	var Create = React.createClass({
-	  displayName: 'Create',
+	var FavAmbassador = React.createClass({
+	  displayName: 'FavAmbassador',
+	  onClick: function onClick() {
+	    var url = 'http://localhost:5000/api/teacherambassadors/' + this.props.id;
+	    var request = new XMLHttpRequest();
+	    request.open("DELETE", url);
+	    request.setRequestHeader('Content-Type', 'application/json');
+	    request.withCredentials = true;
+	    request.onload = function () {
+	      if (request.status === 200) {
+	        console.log("Amabassador removed! hurrah!");
+	      }
+	    }.bind(this);
+	    request.send(null);
+	    this.props.removeAmbassador(this.props.ambassador.id);
+	  },
 	  render: function render() {
 	    return React.createElement(
-	      'h1',
-	      null,
-	      ' The ambassador is added to list '
+	      'div',
+	      { className: 'ambassador' },
+	      React.createElement(
+	        'div',
+	        { className: 'ambassador-details' },
+	        React.createElement(
+	          'h3',
+	          { className: 'ambassador-name' },
+	          this.props.ambassador.name
+	        ),
+	        React.createElement(
+	          'h4',
+	          { className: 'ambassador-specialization' },
+	          'Specialization: ',
+	          this.props.ambassador.subject
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'ambassador-email' },
+	          'Email: ',
+	          this.props.ambassador.email
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'ambassador-city' },
+	          'City: ',
+	          this.props.ambassador.city
+	        ),
+	        React.createElement(
+	          'button',
+	          { onClick: this.onClick },
+	          'Delete'
+	        )
+	      )
 	    );
 	  }
 	});
 	
-	module.exports = Create;
+	module.exports = FavAmbassador;
 
 /***/ }
 /******/ ]);

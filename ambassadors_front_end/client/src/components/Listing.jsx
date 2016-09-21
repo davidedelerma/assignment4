@@ -2,6 +2,7 @@ const React = require ('react')
 const Router = require('react-router')
 const { Link, browserHistory } = Router
 const Ambassador = require('./Ambassador')
+const Cart = require('./Cart')
 
 const Listing = React.createClass({
 
@@ -62,12 +63,10 @@ const Listing = React.createClass({
     request.open("POST", url )
     request.setRequestHeader("Content-Type", "application/json")
     request.withCredentials = true
-    request.onload = () => {
+    request.onload = function() {
       if(request.status === 201){
         console.log(request.responseText)
-        //<Route path='/ambassadorteachers/create' component={Confirmation} />
-      } else if (request.status === 401){
-      }
+      } 
     }
     const data={
       teacher_ambassadors:{
@@ -84,7 +83,8 @@ const Listing = React.createClass({
     //     this.addTeacherAmbassador(this.state.currentTeacher.id,ambassadorID)    
     //   }
     // )
-    this.addTeacherAmbassador(this.state.currentTeacher.id, ambassadorID) 
+    return this.addTeacherAmbassador(this.state.currentTeacher.id, ambassadorID) 
+
   },
 
   render(){
@@ -92,9 +92,10 @@ const Listing = React.createClass({
     return(
         <div className="listing">
           <nav>
-            <Link className='title' to="/"> Ambassadors </Link>
+            <Link className='title-nav' to="/"> Ambassadors </Link>
             <input className='search-box' type='text' placeholder='search by subject' 
             value={this.state.searchQuery} onChange={this.doSearch}/>
+            <Link className='cart' to="/cart"> My Ambassadors </Link>
           </nav>
           <div className='ambassadors-container'>
             {
