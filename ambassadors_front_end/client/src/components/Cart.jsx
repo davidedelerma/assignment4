@@ -1,4 +1,6 @@
 const React = require('react')
+const Router = require('react-router')
+const { Link, browserHistory } = Router
 const FavAmbassador = require ('./FavAmbassador')
 
 const Cart = React.createClass({
@@ -31,13 +33,20 @@ const Cart = React.createClass({
   },
   render(){
     return(
-      <div className='ambassadors-container'>
-        {
-          this.state.favAmbassadors.map((join)=>{
-            return(
-            <FavAmbassador {...join} value= {join.id} key={join.id} removeAmbassador={this.removeAmbassador} />)
+      <div className="listing">
+        <ul className="topnav" id="myTopnav">
+          <li><Link className='title-nav' to="/"> Ambassadors </Link></li>
+        </ul>
+        <div><h1 className='title-myambassador'> My Ambassadors </h1></div>
+        <div className='ambassadors-container'>
+          {
+            this.state.favAmbassadors.map((join)=>{
+              return(
+                <FavAmbassador {...join} value= {join.id} key={join.id} removeAmbassador={this.removeAmbassador} />
+              )
             })
-        }
+          }
+        </div>
       </div>
     )
   }

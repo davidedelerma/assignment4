@@ -25456,14 +25456,22 @@
 	      'div',
 	      { className: 'home' },
 	      React.createElement(
-	        'h1',
-	        { className: 'title' },
-	        ' Ambassadors '
+	        'div',
+	        null,
+	        React.createElement(
+	          'h1',
+	          { className: 'title' },
+	          ' Ambassadors '
+	        )
 	      ),
-	      React.createElement(LoginBox, { url: 'http://localhost:5000/' }),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(LoginBox, { url: 'http://localhost:5000/' })
+	      ),
 	      React.createElement(
 	        Link,
-	        { className: 'ambassador-link', to: '/ambassadors' },
+	        { className: 'ambassadors-link', to: '/ambassadors' },
 	        'View Ambassadors'
 	      )
 	    );
@@ -25527,7 +25535,7 @@
 	        null,
 	        React.createElement(
 	          'h4',
-	          null,
+	          { className: 'welcome-user' },
 	          ' Welcome ',
 	          this.state.currentTeacher.email,
 	          ' '
@@ -26025,20 +26033,27 @@
 	      'div',
 	      { className: 'listing' },
 	      React.createElement(
-	        'nav',
-	        null,
+	        'ul',
+	        { className: 'topnav', id: 'myTopnav' },
 	        React.createElement(
-	          Link,
-	          { className: 'title-nav', to: '/' },
-	          ' Ambassadors '
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { className: 'title-nav', to: '/' },
+	            ' Ambassadors '
+	          )
 	        ),
-	        React.createElement('input', { className: 'search-box', type: 'text', placeholder: 'search by subject',
-	          value: this.state.searchQuery, onChange: this.doSearch }),
 	        React.createElement(
-	          Link,
-	          { className: 'cart', to: '/cart' },
-	          ' My Ambassadors '
-	        )
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { className: 'cart', to: '/cart' },
+	            ' My Ambassadors '
+	          )
+	        ),
+	        React.createElement('input', { className: 'search-box', type: 'text', placeholder: 'Search', value: this.state.searchQuery, onChange: this.doSearch })
 	      ),
 	      React.createElement(
 	        'div',
@@ -26130,7 +26145,7 @@
 	          this.props.name
 	        ),
 	        React.createElement(
-	          'h4',
+	          'h3',
 	          { className: 'ambassador-specialization' },
 	          'Specialization: ',
 	          this.props.subject
@@ -26180,6 +26195,10 @@
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var React = __webpack_require__(1);
+	var Router = __webpack_require__(159);
+	var Link = Router.Link;
+	var browserHistory = Router.browserHistory;
+	
 	var FavAmbassador = __webpack_require__(236);
 	
 	var Cart = React.createClass({
@@ -26214,10 +26233,36 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'ambassadors-container' },
-	      this.state.favAmbassadors.map(function (join) {
-	        return React.createElement(FavAmbassador, _extends({}, join, { value: join.id, key: join.id, removeAmbassador: _this.removeAmbassador }));
-	      })
+	      { className: 'listing' },
+	      React.createElement(
+	        'ul',
+	        { className: 'topnav', id: 'myTopnav' },
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { className: 'title-nav', to: '/' },
+	            ' Ambassadors '
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h1',
+	          { className: 'title-myambassador' },
+	          ' My Ambassadors '
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'ambassadors-container' },
+	        this.state.favAmbassadors.map(function (join) {
+	          return React.createElement(FavAmbassador, _extends({}, join, { value: join.id, key: join.id, removeAmbassador: _this.removeAmbassador }));
+	        })
+	      )
 	    );
 	  }
 	});
@@ -26261,7 +26306,7 @@
 	          this.props.ambassador.name
 	        ),
 	        React.createElement(
-	          'h4',
+	          'h3',
 	          { className: 'ambassador-specialization' },
 	          'Specialization: ',
 	          this.props.ambassador.subject

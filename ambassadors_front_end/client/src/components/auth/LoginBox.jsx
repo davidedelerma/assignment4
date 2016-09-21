@@ -37,7 +37,7 @@ const LoginBox = React.createClass({
     </div>
     if (this.state.currentTeacher){
       mainDiv = <div>
-        <h4> Welcome {this.state.currentTeacher.email} </h4>
+        <h4 className='welcome-user'> Welcome {this.state.currentTeacher.email} </h4>
         <SignOut url={this.props.url + "teachers/sign_out.json"} onSignOut={this.setTeacher} />
       </div>
     }

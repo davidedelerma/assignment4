@@ -13,9 +13,9 @@ const Home=React.createClass({
     console.log(this.props.setCurrentTeacher)
     return(
       <div className = "home">
-        <h1 className='title'> Ambassadors </h1>
-        <LoginBox url='http://localhost:5000/'/>
-        <Link className='ambassador-link' to='/ambassadors' >View Ambassadors</Link>
+        <div><h1 className='title'> Ambassadors </h1></div>
+        <div><LoginBox url='http://localhost:5000/'/></div>
+        <Link className='ambassadors-link' to='/ambassadors' >View Ambassadors</Link>
       </div>
     )
   }

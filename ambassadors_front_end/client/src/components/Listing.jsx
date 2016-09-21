@@ -91,12 +91,11 @@ const Listing = React.createClass({
     
     return(
         <div className="listing">
-          <nav>
-            <Link className='title-nav' to="/"> Ambassadors </Link>
-            <input className='search-box' type='text' placeholder='search by subject' 
-            value={this.state.searchQuery} onChange={this.doSearch}/>
-            <Link className='cart' to="/cart"> My Ambassadors </Link>
-          </nav>
+          <ul className="topnav" id="myTopnav">
+            <li><Link className='title-nav' to="/"> Ambassadors </Link></li>
+            <li><Link className='cart' to="/cart"> My Ambassadors </Link></li>
+            <input className='search-box' type='text' placeholder="Search"value={this.state.searchQuery} onChange={this.doSearch}/>
+          </ul>
           <div className='ambassadors-container'>
             {
               this.state.ambassadors.filter((ambassador) => ` ${ambassador.subject}`.toUpperCase().indexOf(this.state.searchQuery.toUpperCase()) >= 0).map((ambassador)=>{
